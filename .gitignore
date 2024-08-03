@@ -6,3 +6,5 @@ results
 d2v*
 !d2v*.py
 .venv/
+dist/
+wsmf.egg-info/

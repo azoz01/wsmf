@@ -43,7 +43,7 @@ def calculate_meta_features_record_from_path(
     return ft  # type: ignore
 
 
-def main():
+def main() -> None:
     logger.info("Calculating meta-features")
     paths = list(sorted(paths_provider.datasets_splitted_path.iterdir()))
     with Pool(14) as p:
@@ -57,7 +57,16 @@ def main():
     logger.info("Processing meta-features")
     meta_features_df = pd.concat(meta_features)
     meta_features_df = meta_features_df.drop(
-        columns=["num_to_cat", "sd_ratio", "lh_trace", "roy_root"]
+        columns=[
+            "num_to_cat",
+            "sd_ratio",
+            "lh_trace",
+            "roy_root",
+            "can_cor.mean",
+            "nr_disc",
+            "p_trace",
+            "w_lambda",
+        ]
     )
     meta_features_df.iloc[:, :-1] = meta_features_df.iloc[:, :-1].fillna(
         meta_features_df.iloc[:, :-1].mean(axis=0)

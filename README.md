@@ -8,3 +8,8 @@ export PYTHONPATH=`pwd`
 ```
 python bin/load_data.py
 ```
+
+### Release
+```
+python -m build
+```

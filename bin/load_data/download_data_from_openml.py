@@ -1,4 +1,5 @@
 import json
+import warnings
 from operator import itemgetter
 
 import pytorch_lightning as pl
@@ -12,8 +13,10 @@ from experiments_engine.data import (
 )
 from experiments_engine.paths import paths_provider
 
+warnings.simplefilter("ignore")
 
-def main():
+
+def main() -> None:
     pl.seed_everything(123)
     logger.info("Loading tasks ids")
     with open(paths_provider.tasks_ids_path, "r") as f:

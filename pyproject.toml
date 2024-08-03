@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["wsmf"]
+
+[project]
+name = "wsmf"
+version = "0.0.1"
+authors = [
+  { name="Antoni Zajko", email="antoni.zajko.1@gmail.com" }
+]
+description = "Package with encoder-based approaches to warm-starting Bayesian Hyperparameter Optimization."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "dataset2vec>=1.0.0",
+    "openml>=0.14.2",
+    "loguru>=0.7.2",
+    "optuna>=3.6.1",
+    "xgboost>=2.0.3",
+    "scikit-learn>=1.4.2",
+    "pytest>=8.2.1",
+    "pymfe>=0.4.3",
+    "seaborn>=0.13.2",
+    "tensorboard>=2.17.0",
+    "numpy>=1.26.4",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/azoz01/wsmf"

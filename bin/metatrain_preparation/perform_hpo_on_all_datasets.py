@@ -14,7 +14,7 @@ from experiments_engine.paths import paths_provider
 from experiments_engine.utils import extract_dataset_name_from_path
 
 
-def main():
+def main() -> None:
     objectives_to_evaluate = [XGBoostObjective]
     erroneous_datasets = []
     for dataset_path in (
