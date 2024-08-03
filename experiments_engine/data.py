@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 import pandas as pd
 from openml import OpenMLTask
@@ -14,7 +16,7 @@ def move_target_to_last_column(
     return df
 
 
-def is_eligible_task(task: OpenMLTask) -> bool:
+def is_eligible_task(task: OpenMLTask) -> Any:
     if task is None:
         return False
     if (

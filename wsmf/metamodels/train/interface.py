@@ -5,6 +5,7 @@ import pytorch_lightning as pl
 import torch
 from dataset2vec.config import OptimizerConfig
 from torch import Tensor, stack
+from torch.optim.optimizer import Optimizer
 
 
 class TrainingInterface(pl.LightningModule, ABC):
@@ -20,7 +21,7 @@ class TrainingInterface(pl.LightningModule, ABC):
         self.save_hyperparameters()
 
     @abstractmethod
-    def forward(self, *args, **kwargs) -> Tensor:
+    def forward(self, *args, **kwargs) -> Tensor:  # type: ignore
         pass
 
     @abstractmethod
@@ -30,9 +31,9 @@ class TrainingInterface(pl.LightningModule, ABC):
         pass
 
     @abstractmethod
-    def configure_optimizers(
+    def configure_optimizers(  # type: ignore
         self,
-    ) -> tuple[list[torch.optim.Optimizer], list[dict[str, Any]]]:
+    ) -> tuple[list[Optimizer], list[dict[str, Any]]]:
         pass
 
     # Training phase

@@ -37,7 +37,7 @@ def perform_ground_truth_warm_start_experiment(
     )
     if n_initial_trials > 0:
         initial_trials = warm_starter.propose_configurations(
-            objective_landmarkers,  # type: ignore
+            objective_landmarkers,
             n_initial_trials,
         )
         for trial in initial_trials:

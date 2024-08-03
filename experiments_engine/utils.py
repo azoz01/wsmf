@@ -1,12 +1,13 @@
 import json
 from pathlib import Path
+from typing import Any
 
 import torch
 
-device = "cuda" if torch.cuda.is_available else "cpu"
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def read_json(path: Path) -> dict:
+def read_json(path: Path) -> Any:
     with open(path, "r") as f:
         return json.load(f)
 

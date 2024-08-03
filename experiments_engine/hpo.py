@@ -4,6 +4,7 @@ from typing import Any, Callable
 import optuna
 import pandas as pd
 from dataset2vec.utils import DataUtils
+from numpy.typing import NDArray
 from sklearn.base import BaseEstimator
 from sklearn.metrics import roc_auc_score
 from xgboost import XGBClassifier
@@ -15,7 +16,7 @@ class Objective(ABC):
         self,
         df_train: pd.DataFrame,
         df_test: pd.DataFrame,
-        metric: Callable = roc_auc_score,
+        metric: Callable[[NDArray[Any], NDArray[Any]], float] = roc_auc_score,
     ):
         self.X_train, self.y_train = (
             df_train.iloc[:, :-1],
@@ -23,16 +24,16 @@ class Objective(ABC):
         )
         self.X_test, self.y_test = df_test.iloc[:, :-1], df_test.iloc[:, -1]
         self.pipeline = DataUtils.get_preprocessing_pipeline()
-        self.X_train = self.pipeline.fit_transform(self.X_train)  # type: ignore # noqa
-        self.X_test = self.pipeline.transform(self.X_test)  # type: ignore
+        self.X_train = self.pipeline.fit_transform(self.X_train)
+        self.X_test = self.pipeline.transform(self.X_test)
         self.metric = metric
 
     def __call__(self, trial: optuna.Trial) -> float:
         X_train, y_train, X_test, y_test = self.get_data()
         model = self.get_model(trial)
-        model.fit(X_train, y_train)  # type: ignore
-        probas = model.predict_proba(X_test)[:, 1]  # type: ignore
-        return self.metric(y_test, probas)  # type: ignore
+        model.fit(X_train, y_train)
+        probas = model.predict_proba(X_test)[:, 1]
+        return self.metric(y_test, probas)
 
     @abstractmethod
     def get_model(self, trial: optuna.Trial) -> BaseEstimator:
@@ -83,7 +84,7 @@ def perform_study(
     return study
 
 
-def get_best_study_params(study: optuna.Study) -> dict:
+def get_best_study_params(study: optuna.Study) -> dict[str, Any]:
     return study.best_params
 
 

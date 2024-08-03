@@ -4,8 +4,9 @@ from typing import Any
 
 from dataset2vec import Dataset2Vec
 from dataset2vec.config import Dataset2VecConfig, OptimizerConfig
-from torch import Tensor, nn, optim
+from torch import Tensor, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.optimizer import Optimizer
 
 from wsmf.metamodels.train.reconstruction import (
     LandmarkerReconstructionTrainingInterface,
@@ -66,13 +67,13 @@ class Dataset2VecForLandmarkerReconstruction(
         dataset_representation = self.dataset2vec(X, y)
         return self.landmarker_reconstructor(dataset_representation)
 
-    def configure_optimizers(
+    def configure_optimizers(  # type: ignore
         self,
-    ) -> tuple[list[optim.Optimizer], list[dict[str, Any]]]:
-        optimizer = self.optimizer_config.optimizer_cls(  # type: ignore
+    ) -> tuple[list[Optimizer], list[dict[str, Any]]]:
+        optimizer = self.optimizer_config.optimizer_cls(
             self.parameters(),
-            lr=self.optimizer_config.learning_rate,  # type: ignore
-            weight_decay=self.optimizer_config.weight_decay,  # type: ignore
+            lr=self.optimizer_config.learning_rate,
+            weight_decay=self.optimizer_config.weight_decay,
         )
         scheduler = ReduceLROnPlateau(optimizer, patience=20, factor=0.1)
 
@@ -107,4 +108,4 @@ def landmarkers_reconstruction_loss(
         Mean squared error loss between true and predicted landmarkers.
     """
     labels = true_landmarkers.to(predicted_landmarkers.device)
-    return ((predicted_landmarkers - labels) ** 2).mean(dim=1).mean()
+    return ((predicted_landmarkers - labels) ** 2).mean(dim=1).mean()  # type: ignore # noqa: E501

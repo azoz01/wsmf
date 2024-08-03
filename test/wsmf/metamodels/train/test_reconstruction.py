@@ -1,8 +1,8 @@
 from typing import Any, Callable
 
-import torch
 from dataset2vec.config import OptimizerConfig
 from torch import Tensor, rand
+from torch.optim.optimizer import Optimizer
 
 from wsmf.metamodels.train import LandmarkerReconstructionTrainingInterface
 
@@ -23,13 +23,13 @@ class MockImplementation(LandmarkerReconstructionTrainingInterface):
     def forward(self, X: Tensor, y: Tensor) -> Tensor:
         return next(self.mock_encodings_generator)
 
-    def configure_optimizers(
+    def configure_optimizers(  # type: ignore
         self,
-    ) -> tuple[list[torch.optim.Optimizer], list[dict[str, Any]]]:
+    ) -> tuple[list[Optimizer], list[dict[str, Any]]]:
         return None  # type: ignore
 
 
-def test_extract_labels_and_similarities_from_batch():
+def test_extract_labels_and_similarities_from_batch() -> None:
     # Given
     batch = [
         (rand(10, 5), rand(10, 1), Tensor([4, 5, 6])),

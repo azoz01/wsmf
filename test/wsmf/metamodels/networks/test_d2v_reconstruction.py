@@ -5,7 +5,7 @@ from torch import Size, Tensor, rand
 from wsmf.metamodels.networks import Dataset2VecForLandmarkerReconstruction
 
 
-def test_meta_model_returns_output_of_proper_dimensionality():
+def test_meta_model_returns_output_of_proper_dimensionality() -> None:
     # Given
     meta_model = Dataset2VecForLandmarkerReconstruction(4)
     X, y = rand((10, 5)), rand((10, 1))
@@ -17,13 +17,13 @@ def test_meta_model_returns_output_of_proper_dimensionality():
     assert reconstructed_landmarkers.shape == Size([4])
 
 
-def test_meta_model_uses_reconstructor():
+def test_meta_model_uses_reconstructor() -> None:
     # Given
     meta_model = Dataset2VecForLandmarkerReconstruction(3)
     encoder_mock = Mock(return_value=Tensor([1, 2, 3]))
     meta_model.dataset2vec.forward = encoder_mock
     reconstructor_mock = Mock(return_value=Tensor([4, 5, 6]))
-    meta_model.landmarker_reconstructor.forward = reconstructor_mock
+    meta_model.landmarker_reconstructor.forward = reconstructor_mock  # type: ignore # noqa: E501
     X, y = rand((10, 5)), rand((10, 1))
 
     # When

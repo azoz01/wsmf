@@ -6,7 +6,7 @@ from wsmf.metamodels.networks import Dataset2VecMetricLearning
 
 
 @patch("dataset2vec.Dataset2Vec.forward")
-def test_d2v_metric_forward(dataset2vec_mock: Mock):
+def test_d2v_metric_forward(dataset2vec_mock: Mock) -> None:
     # Given
     dataset2vec_mock.return_value = Tensor([1.0, 2.0, 3.0])
     meta_model = Dataset2VecMetricLearning()

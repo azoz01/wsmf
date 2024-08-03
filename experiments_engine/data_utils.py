@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Tuple
+from typing import Any, Tuple
 
 import numpy as np
 import pandas as pd
@@ -18,7 +18,7 @@ def get_dataset_from_path(path: Path) -> Tuple[Tensor, Tensor]:
     dataset = pd.read_parquet(path / "test.parquet")
     X, y = dataset.iloc[:, :-1], dataset.iloc[:, -1]
     pipeline = DataUtils.get_preprocessing_pipeline()
-    X = pipeline.fit_transform(X)  # type: ignore
+    X = pipeline.fit_transform(X)
     X = Tensor(X.values).cuda()
     y = Tensor(y.values).reshape(-1, 1).cuda()
     return X, y
@@ -26,7 +26,7 @@ def get_dataset_from_path(path: Path) -> Tuple[Tensor, Tensor]:
 
 def load_datasets_with_landmarkers(
     reduce_landmarkers_dimensionality: bool = False,
-):
+) -> Tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
     train_datasets_names = list(
         sorted(
             [
@@ -91,7 +91,7 @@ def load_datasets_with_landmarkers(
 
 def __project_landmarkers_to_smaller_space(
     train_landmarkers: dict[str, Tensor], val_landmarkers: dict[str, Tensor]
-):
+) -> Tuple[dict[str, Tensor], dict[str, Tensor]]:
     projection_train_data = np.stack(
         list([item.cpu().numpy() for item in train_landmarkers.values()])
     )
@@ -100,7 +100,7 @@ def __project_landmarkers_to_smaller_space(
     scaling = StandardScaler().fit(scaling_train_data)
     out_train_landmarkers = {
         name: Tensor(
-            scaling.transform(  # type: ignore
+            scaling.transform(
                 projection.transform(value.cpu().numpy().reshape(1, -1))
             )[0]
         )
@@ -108,7 +108,7 @@ def __project_landmarkers_to_smaller_space(
     }
     out_val_landmarkers = {
         name: Tensor(
-            scaling.transform(  # type: ignore
+            scaling.transform(
                 projection.transform(value.cpu().numpy().reshape(1, -1))
             )[0]
         )

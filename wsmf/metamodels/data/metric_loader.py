@@ -6,7 +6,7 @@ from typing import Tuple
 import numpy as np
 from torch import Tensor
 
-from .dataset import EncoderHpoDataset
+from wsmf.metamodels.data.dataset import EncoderHpoDataset
 
 
 class EncoderMetricLearningLoader:
@@ -68,7 +68,7 @@ class EncoderMetricLearningLoader:
     def __iter__(self) -> EncoderMetricLearningLoader:
         return deepcopy(self)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.n_batches
 
     def __generate_sample(
@@ -96,4 +96,4 @@ class EncoderMetricLearningLoader:
     def __calculcate_landmarkers_similarity(
         self, landmarkers1: Tensor, landmarkers2: Tensor
     ) -> float:
-        return ((landmarkers1 - landmarkers2) ** 2).mean().item()
+        return ((landmarkers1 - landmarkers2) ** 2).mean().item()  # type: ignore # noqa E501

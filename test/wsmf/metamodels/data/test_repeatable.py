@@ -7,7 +7,7 @@ from wsmf.metamodels.data import (
 )
 
 
-def test_encoder_metric_loader_calculates_sample_properly():
+def test_encoder_metric_loader_calculates_sample_properly() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])

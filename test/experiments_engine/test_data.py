@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import numpy as np
 import pandas as pd
@@ -10,7 +10,7 @@ from experiments_engine.data import (
 )
 
 
-def test_move_target_to_last_column_when_target_last():
+def test_move_target_to_last_column_when_target_last() -> None:
     # Given
     df = pd.DataFrame({"col1": [1, 2], "col2": [1, 2]})
 
@@ -21,7 +21,7 @@ def test_move_target_to_last_column_when_target_last():
     assert (actual_df == df).all(axis=None)
 
 
-def test_move_target_to_last_column_when_target_not_last():
+def test_move_target_to_last_column_when_target_not_last() -> None:
     # Given
     df = pd.DataFrame({"col1": [1, 2], "col2": [1, 2]})
 
@@ -32,7 +32,7 @@ def test_move_target_to_last_column_when_target_not_last():
     assert (actual_df == df[["col2", "col1"]]).all(axis=None)
 
 
-def test_remove_unwanted_columns():
+def test_remove_unwanted_columns() -> None:
     # Given
     df = pd.DataFrame({"id_1": [1], "2id": [2], "3_id": [3], "col": [4]})
 
@@ -43,7 +43,7 @@ def test_remove_unwanted_columns():
     assert (actual_df == df[["2id", "col"]]).all(axis=None)
 
 
-def test_clean_and_binarize_classification_multiple_classes():
+def test_clean_and_binarize_classification_multiple_classes() -> None:
     # Given
     df = pd.DataFrame({"col": [1, 2, 3, 4], "target": [1, 2, 3, 1]})
 
@@ -56,7 +56,7 @@ def test_clean_and_binarize_classification_multiple_classes():
     assert actual_df["target"].max() == 1
 
 
-def test_clean_and_binarize_classification_text_classes():
+def test_clean_and_binarize_classification_text_classes() -> None:
     # Given
     df = pd.DataFrame({"col": [1, 2, 3, 4], "target": ["A", "B", "C", "A"]})
 
@@ -71,8 +71,8 @@ def test_clean_and_binarize_classification_text_classes():
 
 @patch("numpy.random.uniform")
 def test_clean_and_binarize_classification_when_subset_only_zeros(
-    uniform_mock,
-):
+    uniform_mock: Mock,
+) -> None:
     uniform_mock.return_value = np.array([0.1, 0.2, 0.3])
     # Given
     df = pd.DataFrame({"col": [1, 2, 3, 4], "target": ["A", "B", "C", "A"]})
@@ -88,8 +88,8 @@ def test_clean_and_binarize_classification_when_subset_only_zeros(
 
 @patch("numpy.random.uniform")
 def test_clean_and_binarize_classification_when_subset_only_ones(
-    uniform_mock,
-):
+    uniform_mock: Mock,
+) -> None:
     uniform_mock.return_value = np.array([0.6, 0.7, 0.8])
     # Given
     df = pd.DataFrame({"col": [1, 2, 3, 4], "target": ["A", "B", "C", "A"]})

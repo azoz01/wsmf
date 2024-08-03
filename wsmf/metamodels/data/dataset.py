@@ -4,7 +4,7 @@ from torch import Tensor
 from torch.utils.data import Dataset
 
 
-class EncoderHpoDataset(Dataset):
+class EncoderHpoDataset(Dataset):  # type: ignore
     """
     Dataset class for encoding HPO data.
 
@@ -50,7 +50,7 @@ class EncoderHpoDataset(Dataset):
     def __len__(self) -> int:
         return len(self.datasets)
 
-    def __getitem__(self, dataset_name) -> Tuple[Tensor, Tensor, Tensor]:
+    def __getitem__(self, dataset_name: str) -> Tuple[Tensor, Tensor, Tensor]:
         return (
             *self.datasets[dataset_name],
             self.hp_landmarkers[dataset_name],

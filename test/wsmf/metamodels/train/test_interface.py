@@ -9,7 +9,7 @@ from wsmf.metamodels.train.interface import TrainingInterface
 
 
 class MockImplementation(TrainingInterface):
-    def forward(self, *args, **kwargs) -> Tensor:
+    def forward(self, *args, **kwargs) -> Tensor:  # type: ignore
         return Tensor([0])
 
     def calculate_datasets_similarity(
@@ -17,13 +17,13 @@ class MockImplementation(TrainingInterface):
     ) -> Tensor:
         return Tensor([0.5])
 
-    def configure_optimizers(
+    def configure_optimizers(  # type: ignore
         self,
     ) -> tuple[list[Optimizer], list[dict[str, Any]]]:
         return None  # type: ignore
 
 
-def test_on_train_epoch_start():
+def test_on_train_epoch_start() -> None:
     # Given
     interface = MockImplementation(OptimizerConfig(), lambda x, y: Tensor([0]))
 
@@ -43,7 +43,7 @@ def test_on_train_epoch_start():
 def test_training_step(
     calculate_loss_mock: Mock,
     extract_labels_and_similarities_from_batch_mock: Mock,
-):
+) -> None:
     # Given
     extract_labels_and_similarities_from_batch_mock.return_value = (
         Tensor([1.0, 2.0, 3.0]),
@@ -66,7 +66,7 @@ def test_training_step(
     assert (actual_output["predictions"] == Tensor([4.0, 5.0, 6.0])).all()
 
 
-def test_on_train_batch_end():
+def test_on_train_batch_end() -> None:
     # Given
     interface = MockImplementation(OptimizerConfig(), lambda x, y: Tensor([0]))
     interface.on_train_epoch_start()
@@ -89,7 +89,7 @@ def test_on_train_batch_end():
 
 
 @patch("wsmf.metamodels.train.interface.TrainingInterface.calculate_loss")
-def test_on_train_epoch_end(calculate_loss_mock: Mock):
+def test_on_train_epoch_end(calculate_loss_mock: Mock) -> None:
     # Given
     calculate_loss_mock.return_value = Tensor([0.0])
     interface = MockImplementation(OptimizerConfig(), lambda x, y: Tensor([0]))
@@ -106,7 +106,7 @@ def test_on_train_epoch_end(calculate_loss_mock: Mock):
     assert (calculate_loss_args[0][1] == Tensor([0.1, 0.2, 0.3, 0.4])).all()
 
 
-def test_on_validation_epoch_start():
+def test_on_validation_epoch_start() -> None:
     # Given
     interface = MockImplementation(OptimizerConfig(), lambda x, y: Tensor([0]))
 
@@ -126,7 +126,7 @@ def test_on_validation_epoch_start():
 def test_validation_step(
     calculate_loss_mock: Mock,
     extract_labels_and_similarities_from_batch_mock: Mock,
-):
+) -> None:
     # Given
     extract_labels_and_similarities_from_batch_mock.return_value = (
         Tensor([1.0, 2.0, 3.0]),
@@ -149,7 +149,7 @@ def test_validation_step(
     assert (actual_output["predictions"] == Tensor([4.0, 5.0, 6.0])).all()
 
 
-def test_on_validation_batch_end():
+def test_on_validation_batch_end() -> None:
     # Given
     interface = MockImplementation(OptimizerConfig(), lambda x, y: Tensor([0]))
     interface.on_validation_epoch_start()
@@ -172,7 +172,7 @@ def test_on_validation_batch_end():
 
 
 @patch("wsmf.metamodels.train.interface.TrainingInterface.calculate_loss")
-def test_on_validation_epoch_end(calculate_loss_mock: Mock):
+def test_on_validation_epoch_end(calculate_loss_mock: Mock) -> None:
     # Given
     calculate_loss_mock.return_value = Tensor([0.0])
     interface = MockImplementation(OptimizerConfig(), lambda x, y: Tensor([0]))
@@ -189,7 +189,7 @@ def test_on_validation_epoch_end(calculate_loss_mock: Mock):
     assert (calculate_loss_args[0][1] == Tensor([0.1, 0.2, 0.3, 0.4])).all()
 
 
-def test_extract_labels_and_similarities_from_batch():
+def test_extract_labels_and_similarities_from_batch() -> None:
     # Given
     batch = [
         (rand(10, 5), rand(10, 1), rand(5, 3), rand(5, 1), 1),

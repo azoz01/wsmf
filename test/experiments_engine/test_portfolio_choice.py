@@ -5,7 +5,7 @@ from experiments_engine.portfolio_selection import (
 )
 
 
-def test_extract_best_configuration_idx_from_cluster_eval_results():
+def test_extract_best_configuration_idx_from_cluster_eval_results() -> None:
     # Given
     datasets_inside_clusters_performances = np.array(
         [

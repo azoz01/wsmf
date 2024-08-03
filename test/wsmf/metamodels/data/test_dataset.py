@@ -4,7 +4,7 @@ from torch import Tensor
 from wsmf.metamodels.data import EncoderHpoDataset
 
 
-def test_d2v_hpo_dataset_has_proper_length():
+def test_d2v_hpo_dataset_has_proper_length() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])
@@ -26,7 +26,7 @@ def test_d2v_hpo_dataset_has_proper_length():
     assert len(d2v_hpo_dataset) == 2
 
 
-def test_d2v_hpo_dataset_has_proper_dataset_names():
+def test_d2v_hpo_dataset_has_proper_dataset_names() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])
@@ -48,7 +48,7 @@ def test_d2v_hpo_dataset_has_proper_dataset_names():
     assert d2v_hpo_dataset.dataset_names == ["dataset1", "dataset2"]
 
 
-def test_d2v_hpo_dataset_returns_proper_data_on_index():
+def test_d2v_hpo_dataset_returns_proper_data_on_index() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])
@@ -75,7 +75,7 @@ def test_d2v_hpo_dataset_returns_proper_data_on_index():
     assert (actual_landmarkers == Tensor([-1, -2, -3])).all()
 
 
-def test_d2v_hpo_dataset_fail_when_inconsistent_data_sizes():
+def test_d2v_hpo_dataset_fail_when_inconsistent_data_sizes() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])

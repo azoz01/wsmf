@@ -7,7 +7,9 @@ from wsmf.metamodels.data import EncoderHpoDataset, EncoderMetricLearningLoader
 
 
 @patch("numpy.random.choice")
-def test_encoder_metric_loader_calculates_sample_properly(choice_mock: Mock):
+def test_encoder_metric_loader_calculates_sample_properly(
+    choice_mock: Mock,
+) -> None:
     # Given
     choice_mock.return_value = [0, 1]
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
@@ -40,7 +42,7 @@ def test_encoder_metric_loader_calculates_sample_properly(choice_mock: Mock):
     assert np.isclose(sample[4], 56 / 3)
 
 
-def test_encoder_metric_loader_returns_proper_number_of_batches():
+def test_encoder_metric_loader_returns_proper_number_of_batches() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])
@@ -64,7 +66,7 @@ def test_encoder_metric_loader_returns_proper_number_of_batches():
     assert len(batches) == 16
 
 
-def test_encoder_metric_loader_returns_batch_with_proper_size():
+def test_encoder_metric_loader_returns_batch_with_proper_size() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])

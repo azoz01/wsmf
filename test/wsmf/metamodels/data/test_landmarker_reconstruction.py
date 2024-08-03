@@ -11,7 +11,7 @@ from wsmf.metamodels.data import (
 @patch("numpy.random.choice")
 def test_landmarker_reconstruction_loader_returns_proper_sample(
     choice_mock: Mock,
-):
+) -> None:
     # Given
     choice_mock.return_value = [0, 1]
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
@@ -31,10 +31,10 @@ def test_landmarker_reconstruction_loader_returns_proper_sample(
     # Then
     assert (sample[0] == dataset1_X).all()
     assert (sample[1] == dataset1_y).all()
-    assert (sample[2] == landmarkers["dataset1"]).all()
+    assert (sample[2] == landmarkers["dataset1"]).all()  # type: ignore
 
 
-def test_landmarker_reconstruction_loader_returns_proper_batch_size():
+def test_landmarker_reconstruction_loader_returns_proper_batch_size() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])
@@ -58,7 +58,7 @@ def test_landmarker_reconstruction_loader_returns_proper_batch_size():
     assert len(batch) == 2
 
 
-def test_landmarker_reconstruction_loader_returns_all_datasets():
+def test_landmarker_reconstruction_loader_returns_all_datasets() -> None:
     # Given
     dataset1_X = Tensor([[1, 2, 3], [4, 5, 6]])
     dataset1_y = Tensor([[0], [1]])
@@ -81,7 +81,7 @@ def test_landmarker_reconstruction_loader_returns_all_datasets():
     # Then
     assert (returned_datasets[0][0][0] == dataset1_X).all()
     assert (returned_datasets[0][0][1] == dataset1_y).all()
-    assert (returned_datasets[0][0][2] == landmarkers["dataset1"]).all()
+    assert (returned_datasets[0][0][2] == landmarkers["dataset1"]).all()  # type: ignore # noqa E501
     assert (returned_datasets[1][0][0] == dataset2_X).all()
     assert (returned_datasets[1][0][1] == dataset2_y).all()
-    assert (returned_datasets[1][0][2] == landmarkers["dataset2"]).all()
+    assert (returned_datasets[1][0][2] == landmarkers["dataset2"]).all()  # type: ignore # noqa E501

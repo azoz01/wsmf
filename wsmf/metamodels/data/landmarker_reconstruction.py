@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Tuple
+from typing import Any, Tuple
 
 import numpy as np
 from torch import Tensor
 
-from .dataset import EncoderHpoDataset
+from wsmf.metamodels.data.dataset import EncoderHpoDataset
 
 
 class LandmarkerReconstructionLoader:
@@ -72,7 +72,9 @@ class LandmarkerReconstructionLoader:
 
     def __next__(
         self,
-    ) -> list[Tuple[Tensor, Tensor, Tensor] | Tuple[Tensor, Tensor, dict]]:
+    ) -> list[
+        Tuple[Tensor, Tensor, Tensor] | Tuple[Tensor, Tensor, dict[str, Any]]
+    ]:
         start_index = self.batch_counter * self.batch_size
         end_index = (
             start_index + self.batch_size
@@ -92,10 +94,12 @@ class LandmarkerReconstructionLoader:
             self.sample_indices = np.random.permutation(self.n_datasets)
         return deepcopy(self)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.n_datasets // self.batch_size + 1
 
-    def __generate_sample(self, dataset_idx) -> Tuple[Tensor, Tensor, Tensor]:
+    def __generate_sample(
+        self, dataset_idx: int
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         dataset_name = self.dataset_names[dataset_idx]
 
         return self.dataset[dataset_name]

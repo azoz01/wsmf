@@ -13,4 +13,4 @@ class MetricLearningTrainingInterface(TrainingInterface):
     ) -> Tensor:
         emb1 = self(X1, y1)
         emb2 = self(X2, y2)
-        return ((emb1 - emb2) ** 2).mean()
+        return ((emb1 - emb2) ** 2).mean()  # type: ignore

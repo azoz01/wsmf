@@ -7,6 +7,7 @@ import torch.nn.functional as F
 from dataset2vec import Dataset2Vec
 from dataset2vec.config import Dataset2VecConfig, OptimizerConfig
 from torch import Tensor
+from torch.optim.optimizer import Optimizer
 
 from wsmf.metamodels.train.metric import MetricLearningTrainingInterface
 
@@ -46,15 +47,15 @@ class Dataset2VecMetricLearning(MetricLearningTrainingInterface):
         self.dataset2vec = Dataset2Vec(config, optimizer_config)
 
     def forward(self, X: Tensor, y: Tensor) -> Tensor:
-        return self.dataset2vec(X, y)
+        return self.dataset2vec(X, y)  # type: ignore
 
-    def configure_optimizers(
+    def configure_optimizers(  # type: ignore
         self,
-    ) -> tuple[list[torch.optim.Optimizer], list[dict[str, Any]]]:
-        optimizer = self.optimizer_config.optimizer_cls(  # type: ignore
+    ) -> tuple[list[Optimizer], list[dict[str, Any]]]:
+        optimizer = self.optimizer_config.optimizer_cls(
             self.parameters(),
-            lr=self.optimizer_config.learning_rate,  # type: ignore
-            weight_decay=self.optimizer_config.weight_decay,  # type: ignore
+            lr=self.optimizer_config.learning_rate,
+            weight_decay=self.optimizer_config.weight_decay,
         )
         scheduler = torch.optim.lr_scheduler.LinearLR(optimizer)
 
