@@ -6,10 +6,49 @@ from typing import Tuple
 import numpy as np
 from torch import Tensor
 
-from .datasets import EncoderHpoDataset
+from .dataset import EncoderHpoDataset
 
 
-class GenericD2vHpoDataLoaderForHpo:
+class LandmarkerReconstructionLoader:
+    """
+    Loader for generating batches of data for landmarker reconstruction.
+
+    Creates batches of data from an `EncoderHpoDataset` for landmarker
+    reconstruction tasks. Each batch is triplet
+    (features, targets, landmarkers)
+
+    Parameters
+    ----------
+    dataset : EncoderHpoDataset
+        Dataset containing input, target, and landmark data.
+    batch_size : int
+        Size of each batch.
+    shuffle : bool, optional
+        Whether to shuffle the dataset before creating batches.
+        Default is False.
+
+    Attributes
+    ----------
+    dataset : EncoderHpoDataset
+        Stored dataset.
+    batch_size : int
+        Size of each batch.
+    shuffle : bool
+        Whether to shuffle the dataset.
+    n_datasets : int
+        Number of datasets in the dataset.
+    dataset_names : list
+        List of dataset names.
+
+    Methods
+    -------
+    __next__()
+        Generates the next batch of data.
+    __iter__()
+        Returns an iterator over the loader.
+    __len__()
+        Returns the number of batches.
+    """
 
     def __init__(
         self,
@@ -48,7 +87,7 @@ class GenericD2vHpoDataLoaderForHpo:
             for idx in range(start_index, end_index)
         ]
 
-    def __iter__(self) -> GenericD2vHpoDataLoaderForHpo:
+    def __iter__(self) -> LandmarkerReconstructionLoader:
         if self.shuffle:
             self.sample_indices = np.random.permutation(self.n_datasets)
         return deepcopy(self)

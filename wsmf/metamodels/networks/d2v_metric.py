@@ -11,7 +11,32 @@ from torch import Tensor
 from wsmf.metamodels.train.metric import MetricLearningTrainingInterface
 
 
-class Dataset2VecForHpo(MetricLearningTrainingInterface):
+class Dataset2VecMetricLearning(MetricLearningTrainingInterface):
+    """
+    Dataset2Vec-based metric learning training interface.
+
+    Implements metric learning training using the Dataset2Vec model.
+
+    Parameters
+    ----------
+    config : Dataset2VecConfig, optional
+        Configuration for the Dataset2Vec model.
+        Defaults to Dataset2VecConfig().
+    optimizer_config : OptimizerConfig, optional
+        Configuration for the optimizer.
+        Defaults to OptimizerConfig().
+
+    Attributes
+    ----------
+    dataset2vec : Dataset2Vec
+        The Dataset2Vec model instance.
+
+    Methods
+    -------
+    forward(X, y)
+        Forward pass of the model.
+    """
+
     def __init__(
         self,
         config: Dataset2VecConfig = Dataset2VecConfig(),
@@ -19,17 +44,6 @@ class Dataset2VecForHpo(MetricLearningTrainingInterface):
     ):
         super().__init__(optimizer_config, F.mse_loss)
         self.dataset2vec = Dataset2Vec(config, optimizer_config)
-
-    @classmethod
-    def initialize_from_pretrained(
-        cls,
-        config: Dataset2VecConfig,
-        optimizer_config: OptimizerConfig,
-        pretrained_model: Dataset2Vec,
-    ) -> Dataset2VecForHpo:
-        model = cls(config, optimizer_config)
-        model.dataset2vec = pretrained_model
-        return model
 
     def forward(self, X: Tensor, y: Tensor) -> Tensor:
         return self.dataset2vec(X, y)

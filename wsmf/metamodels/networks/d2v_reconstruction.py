@@ -15,6 +15,37 @@ from wsmf.metamodels.train.reconstruction import (
 class Dataset2VecForLandmarkerReconstruction(
     LandmarkerReconstructionTrainingInterface
 ):
+    """
+    Dataset2Vec-based model for landmarkers reconstruction.
+
+    Parameters
+    ----------
+    landmarker_size : int
+        Size of the landmarkers.
+    config : Dataset2VecConfig, optional
+        Configuration for the Dataset2Vec model.
+        Defaults to Dataset2VecConfig().
+    optimizer_config : OptimizerConfig, optional
+        Configuration for the optimizer.
+        Defaults to OptimizerConfig().
+
+    Attributes
+    ----------
+    landmarker_size : int
+        Size of the landmarkers.
+    dataset2vec : Dataset2Vec
+        The Dataset2Vec model instance.
+    landmarker_reconstructor : nn.Sequential
+        Neural network module for landmarkers reconstruction.
+
+    Methods
+    -------
+    forward(X, y)
+        Forward pass of the model.
+    configure_optimizers()
+        Configures the optimizer and learning rate scheduler.
+    """
+
     def __init__(
         self,
         landmarker_size: int,
@@ -54,21 +85,26 @@ class Dataset2VecForLandmarkerReconstruction(
             }
         ]
 
-    @classmethod
-    def initialize_from_pretrained(
-        cls,
-        landmarker_size: int,
-        config: Dataset2VecConfig,
-        optimizer_config: OptimizerConfig,
-        pretrained_model: Dataset2Vec,
-    ) -> Dataset2VecForLandmarkerReconstruction:
-        model = cls(landmarker_size, config, optimizer_config)
-        model.dataset2vec = pretrained_model
-        return model
-
 
 def landmarkers_reconstruction_loss(
     true_landmarkers: Tensor, predicted_landmarkers: Tensor
 ) -> Tensor:
+    """
+    Loss function for landmarker reconstruction.
+
+    Calculates the mean squared error between true and predicted landmarkers.
+
+    Parameters
+    ----------
+    true_landmarkers : Tensor
+        Tensor of true landmarker values.
+    predicted_landmarkers : Tensor
+        Tensor of predicted landmarker values.
+
+    Returns
+    -------
+    Tensor
+        Mean squared error loss between true and predicted landmarkers.
+    """
     labels = true_landmarkers.to(predicted_landmarkers.device)
     return ((predicted_landmarkers - labels) ** 2).mean(dim=1).mean()

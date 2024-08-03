@@ -4,6 +4,9 @@ from .interface import TrainingInterface
 
 
 class LandmarkerReconstructionTrainingInterface(TrainingInterface):
+    """
+    Base class for landmarker reconstruction training based meta-models.
+    """
 
     def extract_labels_and_similarities_from_batch(
         self, batch: list[tuple[Tensor, Tensor, Tensor]]  # type: ignore

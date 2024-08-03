@@ -71,8 +71,10 @@ class TrainingInterface(pl.LightningModule, ABC):
             )
 
     def on_train_epoch_end(self) -> None:
-        training_labels = torch.concat(self.training_labels, dim=0)
         training_predictions = torch.concat(self.training_predictions, dim=0)
+        training_labels = torch.concat(self.training_labels, dim=0).to(
+            training_predictions.device
+        )
         self.log(
             "train_loss",
             self.calculate_loss(training_labels, training_predictions),
@@ -115,9 +117,11 @@ class TrainingInterface(pl.LightningModule, ABC):
             )
 
     def on_validation_epoch_end(self) -> None:
-        validation_labels = torch.concat(self.validation_labels, dim=0).cuda()
         validation_predictions = torch.concat(
             self.validation_predictions, dim=0
+        )
+        validation_labels = torch.concat(self.validation_labels, dim=0).to(
+            validation_predictions.device
         )
         self.log(
             "val_loss",

@@ -6,10 +6,47 @@ from typing import Tuple
 import numpy as np
 from torch import Tensor
 
-from .datasets import EncoderHpoDataset
+from .dataset import EncoderHpoDataset
 
 
 class EncoderMetricLearningLoader:
+    """
+    Loader for generating batches of data for metric learning.
+
+    Creates batches of data from an `EncoderHpoDataset`
+    for metric learning purposes.
+
+    Parameters
+    ----------
+    dataset : EncoderHpoDataset
+        Dataset containing input, target, and landmarkers data.
+    n_batches : int
+        Number of batches to generate.
+    batch_size : int
+        Size of each batch.
+
+    Attributes
+    ----------
+    dataset : EncoderHpoDataset
+        Stored dataset.
+    n_batches : int
+        Number of batches to generate.
+    batch_size : int
+        Size of each batch.
+    n_datasets : int
+        Number of datasets in the dataset.
+    dataset_names : list
+        List of dataset names.
+
+    Methods
+    -------
+    __next__()
+        Generates the next batch of data.
+    __iter__()
+        Returns an iterator over the loader.
+    __len__()
+        Returns the number of batches.
+    """
 
     def __init__(
         self, dataset: EncoderHpoDataset, n_batches: int, batch_size: int

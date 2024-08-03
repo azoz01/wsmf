@@ -4,6 +4,9 @@ from .interface import TrainingInterface
 
 
 class MetricLearningTrainingInterface(TrainingInterface):
+    """
+    Base class for metric learning based meta-models.
+    """
 
     def calculate_datasets_similarity(
         self, X1: Tensor, y1: Tensor, X2: Tensor, y2: Tensor
