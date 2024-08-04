@@ -106,7 +106,7 @@ def main():
 
     logger.info("Saving portfolio")
     with open(
-        paths_provider.hp_portfolio_configuratioons_path
+        paths_provider.hp_portfolio_configurations_path
         / f"{args.model_name}.json",
         "w",
     ) as f:

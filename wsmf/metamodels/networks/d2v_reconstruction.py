@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import torch.nn.functional as F
 from dataset2vec import Dataset2Vec
 from dataset2vec.config import Dataset2VecConfig, OptimizerConfig
 from torch import Tensor, nn
@@ -18,6 +19,7 @@ class Dataset2VecForLandmarkerReconstruction(
 ):
     """
     Dataset2Vec-based model for landmarkers reconstruction.
+    Now it only supports landmarkers based on ROC AUC
 
     Parameters
     ----------
@@ -65,7 +67,9 @@ class Dataset2VecForLandmarkerReconstruction(
 
     def forward(self, X: Tensor, y: Tensor) -> Any:
         dataset_representation = self.dataset2vec(X, y)
-        return self.landmarker_reconstructor(dataset_representation)
+        return roc_auc_activation(
+            self.landmarker_reconstructor(dataset_representation)
+        )
 
     def configure_optimizers(  # type: ignore
         self,
@@ -109,3 +113,7 @@ def landmarkers_reconstruction_loss(
     """
     labels = true_landmarkers.to(predicted_landmarkers.device)
     return ((predicted_landmarkers - labels) ** 2).mean(dim=1).mean()  # type: ignore # noqa: E501
+
+
+def roc_auc_activation(x: Tensor) -> Tensor:
+    return (1 - F.relu(1 - F.relu(x))) / 2 + 0.5  # type: ignore

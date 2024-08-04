@@ -6,8 +6,8 @@ import pandas as pd
 from optuna.samplers import BaseSampler, TPESampler
 from torch import Tensor
 
-from experiments_engine.hp_selectors.baselines import LandmarkerHpSelector
 from experiments_engine.hpo import Objective, disable_optuna_logs
+from wsmf.selectors import LandmarkerHpSelector
 from wsmf.selectors.selector import WarmstartHpSelector
 
 
@@ -37,7 +37,7 @@ def perform_ground_truth_warm_start_experiment(
     )
     if n_initial_trials > 0:
         initial_trials = warm_starter.propose_configurations(
-            objective_landmarkers,
+            objective_landmarkers,  # type: ignore
             n_initial_trials,
         )
         for trial in initial_trials:

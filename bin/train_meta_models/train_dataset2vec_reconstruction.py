@@ -7,17 +7,13 @@ from loguru import logger
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 
-from experiments_engine.metamodels.dataset import (
-    D2vHpoDataset,
-    GenericD2vHpoDataLoaderForHpo,
-)
-from experiments_engine.metamodels.networks.d2v_reconstruction import (
-    Dataset2VecForLandmarkerReconstruction,
-)
-from experiments_engine.metamodels.scripts_utils import (
-    load_datasets_with_landmarkers,
-)
+from experiments_engine.data_utils import load_datasets_with_landmarkers
 from experiments_engine.paths import paths_provider
+from wsmf.metamodels.data import (
+    EncoderHpoDataset,
+    LandmarkerReconstructionLoader,
+)
+from wsmf.metamodels.networks import Dataset2VecForLandmarkerReconstruction
 
 warnings.simplefilter("ignore")
 torch.set_default_device("cuda")
@@ -30,10 +26,10 @@ def main():
     train_datasets, train_landmarkers, val_datasets, val_landmarkers = (
         load_datasets_with_landmarkers()
     )
-    train_dataset = D2vHpoDataset(train_datasets, train_landmarkers)
-    train_dataloader = GenericD2vHpoDataLoaderForHpo(train_dataset, 5, True)
-    val_dataset = D2vHpoDataset(val_datasets, val_landmarkers)
-    val_dataloader = GenericD2vHpoDataLoaderForHpo(val_dataset, 32, False)
+    train_dataset = EncoderHpoDataset(train_datasets, train_landmarkers)
+    train_dataloader = LandmarkerReconstructionLoader(train_dataset, 5, True)
+    val_dataset = EncoderHpoDataset(val_datasets, val_landmarkers)
+    val_dataloader = LandmarkerReconstructionLoader(val_dataset, 32, False)
 
     logger.info("Training meta-model")
     outptut_dim = len(list(train_landmarkers.values())[0])
@@ -70,7 +66,7 @@ def main():
         ],
         log_every_n_steps=1,
         default_root_dir=paths_provider.encoders_results_path
-        / "d2v_reconstruction_reduced_half_random_output",
+        / "d2v_reconstruction",
         check_val_every_n_epoch=1,
     )
     trainer.fit(model, train_dataloader, val_dataloader)

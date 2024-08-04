@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from torch import Size, Tensor, rand
 
@@ -17,8 +17,10 @@ def test_meta_model_returns_output_of_proper_dimensionality() -> None:
     assert reconstructed_landmarkers.shape == Size([4])
 
 
-def test_meta_model_uses_reconstructor() -> None:
+@patch("wsmf.metamodels.networks.d2v_reconstruction.roc_auc_activation")
+def test_meta_model_uses_reconstructor(roc_auc_activation_mock: Mock) -> None:
     # Given
+    roc_auc_activation_mock.return_value = Tensor([4, 5, 6])
     meta_model = Dataset2VecForLandmarkerReconstruction(3)
     encoder_mock = Mock(return_value=Tensor([1, 2, 3]))
     meta_model.dataset2vec.forward = encoder_mock

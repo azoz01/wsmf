@@ -26,7 +26,7 @@ class PathsProvider:
         )
 
         self.root_results_path = root_results_path
-        self.hp_portfolio_configuratioons_path = (
+        self.hp_portfolio_configurations_path = (
             root_results_path / "hp_portfolio_configurations"
         )
         self.metafeatures_path = root_results_path / "metafeatures.parquet"
@@ -34,6 +34,10 @@ class PathsProvider:
         self.landmarkers_path = root_results_path / "landmarkers"
         self.warmstart_results_path = root_results_path / "warmstart_results"
         self.encoders_results_path = root_results_path / "encoder"
+        self.meta_dataset_analysis_path = (
+            root_results_path / "metadataset_analysis"
+        )
+        self.results_analysis_path = root_results_path / "results_analysis"
 
         for field_name in dir(self):
             attr_val = getattr(self, field_name)

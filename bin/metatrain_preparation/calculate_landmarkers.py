@@ -23,8 +23,8 @@ def main():
 
     logger.info("Loading portfolio configurations")
     with open(
-        paths_provider.hp_portfolio_configuratioons_path
-        / f"{args.model_name}_half_random.json"
+        paths_provider.hp_portfolio_configurations_path
+        / f"{args.model_name}.json"
     ) as f:
         portfolio = json.load(f)
 

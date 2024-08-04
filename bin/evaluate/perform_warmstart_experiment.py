@@ -1,27 +1,35 @@
 import argparse
 import json
 import warnings
+from functools import partial
 
 import pandas as pd
 import pytorch_lightning as pl
-import yaml
+from dataset2vec.model import Dataset2Vec
 from loguru import logger
 from optuna import samplers
 from torch import Tensor
 from tqdm import tqdm
 
 import experiments_engine.hpo as hpo_cls_pkg
-from experiments_engine.hp_selectors.baselines import LandmarkerHpSelector
-from experiments_engine.hp_selectors.factory import (
-    SelectorsFactory,
-    get_hp_selector_from_path,
-)
 from experiments_engine.paths import paths_provider
+from experiments_engine.selectors_utils import get_hp_selector_from_path
 from experiments_engine.utils import extract_dataset_name_from_path
 from experiments_engine.warmstart_utils import (
     get_hpo_task_from_path,
     perform_ground_truth_warm_start_experiment,
     perform_warm_start_experiment,
+)
+from wsmf.metamodels.networks import (
+    Dataset2VecForLandmarkerReconstruction,
+    Dataset2VecMetricLearning,
+)
+from wsmf.selectors import (
+    LandmarkerHpSelector,
+    RandomHpSelector,
+    RankBasedHpSelector,
+    ReconstructionBasedHpSelector,
+    RepresentationBasedHpSelector,
 )
 
 warnings.simplefilter("ignore")
@@ -35,26 +43,98 @@ def main():
     parser.add_argument("--model-name", type=str)
     parser.add_argument("--sampler-name", type=str)
     args = parser.parse_args()
-    with open(paths_provider.hp_selectors_path, "r") as f:
-        config = yaml.load(f, yaml.CLoader)
     objective_cls = getattr(hpo_cls_pkg, args.objective)
     sampler_cls = getattr(samplers, args.sampler_name)
 
     logger.info("Initializing configurations selectors")
     selectors = [
+        ("No warm-start", None),
         (
-            config_entry.pop("name"),
-            SelectorsFactory.get_selector_from_config(
-                config_entry, args.model_name
+            "Random from portfolio",
+            get_hp_selector_from_path(
+                RandomHpSelector,
+                paths_provider.train_meta_dataset_path,
+                paths_provider.hp_portfolio_configurations_path
+                / f"{args.model_name}.json",
+                paths_provider.landmarkers_path / f"{args.model_name}.json",
             ),
-        )
-        for config_entry in config
+        ),
+        (
+            "Rank from portfolio",
+            get_hp_selector_from_path(
+                RankBasedHpSelector,
+                paths_provider.train_meta_dataset_path,
+                paths_provider.hp_portfolio_configurations_path
+                / f"{args.model_name}.json",
+                paths_provider.landmarkers_path / f"{args.model_name}.json",
+            ),
+        ),
+        (
+            "Dataset2Vec basic",
+            get_hp_selector_from_path(
+                partial(
+                    RepresentationBasedHpSelector,
+                    encoder=Dataset2Vec.load_from_checkpoint(
+                        list(
+                            (
+                                paths_provider.encoders_results_path
+                                / "d2v_base"
+                            ).rglob("*.ckpt")
+                        )[0]
+                    ),
+                ),
+                paths_provider.train_meta_dataset_path,
+                paths_provider.hp_portfolio_configurations_path
+                / f"{args.model_name}.json",
+                paths_provider.landmarkers_path / f"{args.model_name}.json",
+            ),
+        ),
+        (
+            "Dataset2Vec metric learning",
+            get_hp_selector_from_path(
+                partial(
+                    RepresentationBasedHpSelector,
+                    encoder=Dataset2VecMetricLearning.load_from_checkpoint(
+                        list(
+                            (
+                                paths_provider.encoders_results_path
+                                / "d2v_metric"
+                            ).rglob("*.ckpt")
+                        )[0]
+                    ),
+                ),
+                paths_provider.train_meta_dataset_path,
+                paths_provider.hp_portfolio_configurations_path
+                / f"{args.model_name}.json",
+                paths_provider.landmarkers_path / f"{args.model_name}.json",
+            ),
+        ),
+        (
+            "Dataset2Vec landmarker reconstruction",
+            get_hp_selector_from_path(
+                partial(
+                    ReconstructionBasedHpSelector,
+                    encoder=Dataset2VecForLandmarkerReconstruction.load_from_checkpoint(  # noqa: E501
+                        list(
+                            (
+                                paths_provider.encoders_results_path
+                                / "d2v_reconstruction"
+                            ).rglob("*.ckpt")
+                        )[0]
+                    ),
+                ),
+                paths_provider.train_meta_dataset_path,
+                paths_provider.hp_portfolio_configurations_path
+                / f"{args.model_name}.json",
+                paths_provider.landmarkers_path / f"{args.model_name}.json",
+            ),
+        ),
     ]
     landmarker_based_selector = get_hp_selector_from_path(
         LandmarkerHpSelector,
         paths_provider.train_meta_dataset_path,
-        paths_provider.hp_portfolio_configuratioons_path
-        / f"{args.model_name}_half_random.json",
+        paths_provider.hp_portfolio_configurations_path
+        / f"{args.model_name}.json",
         paths_provider.landmarkers_path / f"{args.model_name}.json",
     )
 

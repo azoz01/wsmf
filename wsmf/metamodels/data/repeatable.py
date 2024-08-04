@@ -4,7 +4,7 @@ from copy import deepcopy
 from typing import Any, Iterable
 
 
-class GenericRepeatableD2vLoader:
+class GenericRepeatableDataLoader:
 
     def __init__(self, loader: Iterable[Any]):
         self.batches = list(loader)
@@ -17,7 +17,7 @@ class GenericRepeatableD2vLoader:
         self.released_batches_count += 1
         return batch
 
-    def __iter__(self) -> GenericRepeatableD2vLoader:
+    def __iter__(self) -> GenericRepeatableDataLoader:
         return deepcopy(self)
 
     def __len__(self) -> int:

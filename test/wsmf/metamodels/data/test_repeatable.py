@@ -3,7 +3,7 @@ from torch import Tensor
 from wsmf.metamodels.data import (
     EncoderHpoDataset,
     EncoderMetricLearningLoader,
-    GenericRepeatableD2vLoader,
+    GenericRepeatableDataLoader,
 )
 
 
@@ -29,7 +29,7 @@ def test_encoder_metric_loader_calculates_sample_properly() -> None:
     # When
     d2v_hpo_dataset = EncoderHpoDataset(datasets, landmarkers)
     dataloader = EncoderMetricLearningLoader(d2v_hpo_dataset, 2, 1)
-    repeatable_loader = GenericRepeatableD2vLoader(dataloader)
+    repeatable_loader = GenericRepeatableDataLoader(dataloader)
     batches1 = list(repeatable_loader)
     batches2 = list(repeatable_loader)
 

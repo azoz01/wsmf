@@ -29,7 +29,7 @@ def graph_ranks(
     reverse=False,
     filename=None,
     labels=False,
-    **kwargs
+    **kwargs,
 ):
     """
     Draws a CD graph, which is used to display  the differences in methods'
@@ -280,7 +280,6 @@ def graph_ranks(
                 linewidth=linewidth_sign,
             )
             start += height
-            print("drawing: ", l, r)
 
     # draw_lines(lines)
     start = cline + 0.2
@@ -292,11 +291,9 @@ def graph_ranks(
     cliques = form_cliques(p_values, nnames)
     i = 1
     achieved_half = False
-    print(nnames)
     for clq in cliques:
         if len(clq) == 1:
             continue
-        print(clq)
         min_idx = np.array(clq).min()
         max_idx = np.array(clq).max()
         if min_idx >= len(nnames) / 2 and achieved_half == False:
@@ -338,11 +335,6 @@ def draw_cd_diagram(df_perf=None, alpha=0.05, title=None, labels=False):
     """
     p_values, average_ranks, _ = wilcoxon_holm(df_perf=df_perf, alpha=alpha)
 
-    print(average_ranks)
-
-    for p in p_values:
-        print(p)
-
     graph_ranks(
         average_ranks.values,
         average_ranks.keys(),
@@ -370,7 +362,6 @@ def wilcoxon_holm(alpha=0.05, df_perf=None):
     Applies the wilcoxon signed rank test between each pair of algorithm and then use Holm
     to reject the null's hypothesis
     """
-    print(pd.unique(df_perf["classifier_name"]))
     # count the number of tested datasets per classifier
     df_counts = pd.DataFrame(
         {"count": df_perf.groupby(["classifier_name"]).size()}
