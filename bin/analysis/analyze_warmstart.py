@@ -44,7 +44,7 @@ def main():
     plt.clf()
 
     logger.info("Generating ADTM plot")
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(10, 5))
     sns.lineplot(data=plot_data, x="number", y="distance", hue="warmstart")
     plt.savefig(paths_provider.results_analysis_path / "adtm.png")
     plt.clf()
@@ -59,7 +59,17 @@ def main():
         ]
     )
     plt.savefig(
-        paths_provider.results_analysis_path / "cd.png", bbox_inches="tight"
+        paths_provider.results_analysis_path / "cd_5.png", bbox_inches="tight"
+    )
+    plt.clf()
+
+    draw_cd_diagram(
+        df_perf=plot_data[["classifier_name", "dataset_name", "accuracy"]].loc[
+            plot_data.number == 19
+        ]
+    )
+    plt.savefig(
+        paths_provider.results_analysis_path / "cd_20.png", bbox_inches="tight"
     )
     plt.clf()
 
