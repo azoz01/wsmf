@@ -47,6 +47,17 @@ def main():
                 )[0]
             ),
         ),
+        (
+            "Dataset2Vec reconstruction (representations)",
+            Dataset2VecForLandmarkerReconstruction.load_from_checkpoint(
+                list(
+                    (
+                        paths_provider.encoders_results_path
+                        / "d2v_reconstruction"
+                    ).rglob("*.ckpt")
+                )[0]
+            ),
+        ),
     ]
     logger.info("Analyzing")
     results = dict()
@@ -102,7 +113,7 @@ def main():
         correlations.append(
             spearmanr(landmarkers_distances, datasets_distances).statistic
         )
-    results["Dataset2Vec reconstruction"] = {
+    results["Dataset2Vec reconstruction (to landmarkers)"] = {
         "mean": np.mean(correlations),
         "std": np.std(correlations),
     }
