@@ -5,7 +5,7 @@ import torch
 from dataset2vec.config import Dataset2VecConfig, OptimizerConfig
 from loguru import logger
 from pytorch_lightning import Trainer
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 from experiments_engine.data_utils import load_datasets_with_landmarkers
 from experiments_engine.paths import paths_provider
@@ -36,21 +36,21 @@ def main():
     model = Dataset2VecForLandmarkerReconstruction(
         landmarker_size=outptut_dim,
         config=Dataset2VecConfig(
-            f_res_n_layers=3,
+            f_res_n_layers=1,
             f_block_repetitions=1,
             f_res_hidden_size=256,
             f_out_size=256,
             f_dense_hidden_size=256,
-            g_layers_sizes=[256] * 3,
-            h_res_n_layers=2,
+            g_layers_sizes=[256] * 1,
+            h_res_n_layers=1,
             h_block_repetitions=1,
             h_res_hidden_size=512,
             h_dense_hidden_size=512,
-            output_size=256,
+            output_size=512,
             activation_cls=torch.nn.GELU,
         ),
         optimizer_config=OptimizerConfig(
-            learning_rate=1e-4, weight_decay=1e-5, gamma=5
+            learning_rate=1e-4, weight_decay=0, gamma=5
         ),
     ).cuda()
     trainer = Trainer(
@@ -63,6 +63,7 @@ def main():
                 every_n_epochs=1,
                 monitor="val_loss",
             ),
+            EarlyStopping("val_loss", mode="min", patience=20),
         ],
         log_every_n_steps=1,
         default_root_dir=paths_provider.encoders_results_path
