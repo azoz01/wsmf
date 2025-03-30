@@ -1,22 +1,20 @@
 import argparse
 import json
 
+import experiments_engine.hpo as hpo_cls_pkg
 import numpy as np
 import pandas as pd
 import pytorch_lightning as pl
-from loguru import logger
-from optuna.trial import FixedTrial
-from sklearn.cluster import KMeans
-from tqdm import tqdm
-
-import experiments_engine.hpo as hpo_cls_pkg
-from experiments_engine.constants import N_CONFIGURATIONS_IN_PORTFOLIO
 from experiments_engine.hpo import disable_optuna_logs
 from experiments_engine.paths import paths_provider
 from experiments_engine.portfolio_selection import (
     extract_best_configuration_idx_from_cluster_eval_results,
 )
 from experiments_engine.utils import extract_dataset_name_from_path, read_json
+from loguru import logger
+from optuna.trial import FixedTrial
+from sklearn.cluster import KMeans
+from tqdm import tqdm
 
 disable_optuna_logs()
 
@@ -38,6 +36,7 @@ def main():
     metafeatures_df = metafeatures_df.loc[
         metafeatures_df["dataset_name"].isin(considered_datasets)
     ]
+    N_CONFIGURATIONS_IN_PORTFOLIO = min(100, metafeatures_df.shape[0])
     metafeatures = metafeatures_df.iloc[:, :-1].values
     clusters = KMeans(
         n_clusters=N_CONFIGURATIONS_IN_PORTFOLIO, n_init=20

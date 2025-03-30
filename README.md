@@ -3,7 +3,7 @@
 This package contains implementations of two novel approaches to warm-starting encoder-based warm-start of the Bayesian Hyperparameter Optimization. It allows both training and using meta-models which can help in this meta-task.
 
 ## Experiment reproduction
-To reproduce experiments install requirements from file `requirements.txt` and then run script `./scripts/run_all_experiments.sh`
+To reproduce experiments install requirements from file `requirements.txt` and then run script `./scripts/run_all_experiments.sh`. To run experiments on toy datasets change in 10th line in file `experiments_engine/paths.py` `"tasks.json"` to `"tasks_toy.json"` 
 
 ## Contents
 **Meta-models** - As for now it contains two approaches to encoder-based warm-start:
