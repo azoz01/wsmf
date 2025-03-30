@@ -2,6 +2,8 @@
 ## tl;dr
 This package contains implementations of two novel approaches to warm-starting encoder-based warm-start of the Bayesian Hyperparameter Optimization. It allows both training and using meta-models which can help in this meta-task.
 
+## Experiment reproduction
+To reproduce experiments install requirements from file `requirements.txt` and then run script `./scripts/run_all_experiments.sh`
 
 ## Contents
 **Meta-models** - As for now it contains two approaches to encoder-based warm-start:
